@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5356478773294432865}
   - component: {fileID: 7904659955992655531}
   - component: {fileID: 2964372271088365686}
+  - component: {fileID: -3760531335353055485}
   m_Layer: 0
   m_Name: Tracking-Obstacle-1
   m_TagString: Obstacle
@@ -106,3 +107,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3568122906479412846, guid: fc7e863a8c68106469f94461e8a8cec1, type: 3}
+--- !u!114 &-3760531335353055485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8552901019017533310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82adf3ffad55d174ba26e15479a3ae87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

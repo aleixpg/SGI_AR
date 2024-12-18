@@ -17,7 +17,7 @@ public class ButtonHandler : MonoBehaviour
     private float t = 0f; // Variable para interpolar a lo largo de la curva
     private Vector3 startPoint; // Punto de inicio del cubo
     private float jumpHeight = 0.04f; // Altura máxima del salto
-    private float jumpDuration = 0.5f; // Duración del salto
+    private float jumpDuration = 0.8f; // Duración del salto
     private float jumpTimer = 0f; // Temporizador para el salto
     private Vector3 initialJumpPosition; // Posición inicial del salto
   void Start()
@@ -145,18 +145,11 @@ public class ButtonHandler : MonoBehaviour
             movingCube.transform.position = startPoint;
             t = 0f; // Reinicia el parámetro t
             isMoving = false;
-
+            jumpButton.interactable = false;
             Debug.Log("Jugador reiniciado tras colisión.");
         }
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Obstacle"))
-        {
-            Debug.Log("Colisión detectada con un obstáculo. Volviendo a la posición inicial.");
-            TeleportCubeToStart();
-        }
-    }
+    
 
     private void TeleportCubeToStart()
     {
