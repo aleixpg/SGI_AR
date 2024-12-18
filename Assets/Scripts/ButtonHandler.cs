@@ -20,8 +20,7 @@ public class ButtonHandler : MonoBehaviour
     private float jumpDuration = 0.5f; // Duración del salto
     private float jumpTimer = 0f; // Temporizador para el salto
     private Vector3 initialJumpPosition; // Posición inicial del salto
-
-    void Start()
+  void Start()
     {
         // Encuentra el ImageTracker en la escena
         imageTracker = FindObjectOfType<ImageTracker>();
@@ -58,7 +57,9 @@ public class ButtonHandler : MonoBehaviour
         {
             movementSpeed = Mathf.Lerp(0.2f, 1f, speedScrollbar.value);
         }
+
         UpdateOrientation();
+
         // Mueve el cubo si está en movimiento
         if (isMoving && movingCube != null && !isJumping)
         {
@@ -79,6 +80,7 @@ public class ButtonHandler : MonoBehaviour
         if (currentText == "Start")
         {
             Debug.Log("Start button clicked!");
+            jumpButton.interactable = true; // Habilita el botón de salto
             isMoving = true; // Inicia el movimiento
         }
         else if (currentText == "Restart")
@@ -100,7 +102,6 @@ public class ButtonHandler : MonoBehaviour
         }
     }
 
-
     private void SpawnCubeAtTrackingStart()
     {
         if (imageTracker != null && imageTracker.HasStart)
@@ -114,12 +115,60 @@ public class ButtonHandler : MonoBehaviour
             Vector3 nextPosition = PolynomialCurve.CalculatePoint(initialDeltaT, controlPoints);
             Vector3 initialDirection = (nextPosition - startPoint).normalized;
 
-            // Instancia el personaje en la posición del Tracking-Start y orientado hacia la dirección inicial
+            // Instancia el personaje
             movingCube = Instantiate(cubePrefab, startPoint, Quaternion.LookRotation(initialDirection, Vector3.up));
-            Debug.Log("Personaje spawneado en Tracking-Start y orientado hacia la curva");
 
-            // Habilita el botón de Jump
-            jumpButton.interactable = true;
+            // Añadir un BoxCollider si no existe
+            if (movingCube.GetComponent<Collider>() == null)
+            {
+                movingCube.AddComponent<BoxCollider>();
+            }
+
+            // Añadir un Rigidbody si no existe
+            if (movingCube.GetComponent<Rigidbody>() == null)
+            {
+                Rigidbody rb = movingCube.AddComponent<Rigidbody>();
+                rb.isKinematic = false; // Asegúrate de que no sea cinemático para detectar colisiones físicas
+                rb.useGravity = false;  // Si no quieres gravedad
+            }
+
+            // Debug
+            Debug.Log("Personaje instanciado con Rigidbody y Collider.");
+        }
+    }
+
+    public void ResetPlayer()
+    {
+        if (movingCube != null)
+        {
+            // Reinicia la posición y el estado
+            movingCube.transform.position = startPoint;
+            t = 0f; // Reinicia el parámetro t
+            isMoving = false;
+
+            Debug.Log("Jugador reiniciado tras colisión.");
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("Colisión detectada con un obstáculo. Volviendo a la posición inicial.");
+            TeleportCubeToStart();
+        }
+    }
+
+    private void TeleportCubeToStart()
+    {
+        if (movingCube != null)
+        {
+            // Teletransporta el cubo al punto de inicio
+            movingCube.transform.position = startPoint;
+
+            // Reinicia el parámetro t
+            t = 0f;
+
+            Debug.Log("Cubo teletransportado al punto de inicio");
         }
     }
 
@@ -208,20 +257,6 @@ public class ButtonHandler : MonoBehaviour
 
             Vector3 jumpPosition = new Vector3(movingCube.transform.position.x, initialJumpPosition.y + height, movingCube.transform.position.z);
             movingCube.transform.position = jumpPosition;
-        }
-    }
-
-    private void TeleportCubeToStart()
-    {
-        if (movingCube != null)
-        {
-            // Teletransporta el cubo al punto de inicio
-            movingCube.transform.position = startPoint;
-
-            // Reinicia el parámetro t
-            t = 0f;
-
-            Debug.Log("Cubo teletransportado al punto de inicio");
         }
     }
 
