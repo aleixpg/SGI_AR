@@ -14,6 +14,22 @@ public class ImageTracker : MonoBehaviour
 
     private Dictionary<string, GameObject> instantiatedObjects = new Dictionary<string, GameObject>();
 
+
+    public bool HasStart { get; private set; } = false;
+    public bool HasFinish { get; private set; } = false;
+    private Vector3 start; // Almacena la posición del Tracking-Start
+
+    public Vector3 GetStartPoint()
+    {
+        return start;
+    }
+
+
+    public List<Vector3> GetControlPoints()
+    {
+        return roadManager.GetControlPoints();
+    }
+
     void Awake()
     {
         trackedImages = GetComponent<ARTrackedImageManager>();
@@ -67,6 +83,17 @@ public class ImageTracker : MonoBehaviour
     {
         // Actualiza los puntos de control de la carretera según la imagen rastreada
         roadManager.UpdateTrackingPoints(trackedImage);
+
+        // Verifica si las imágenes requeridas están presentes
+        if (trackedImage.referenceImage.name == "Tracking-Start")
+        {
+            start = trackedImage.transform.position;
+            HasStart = true;
+        }
+        else if (trackedImage.referenceImage.name == "Tracking-Finish")
+        {
+            HasFinish = true;
+        }
 
         // Si no existe un objeto instanciado asociado a esta imagen, lo crea
         if (!instantiatedObjects.ContainsKey(trackedImage.referenceImage.name))
