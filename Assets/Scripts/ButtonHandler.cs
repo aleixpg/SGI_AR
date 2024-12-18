@@ -135,6 +135,7 @@ public class ButtonHandler : MonoBehaviour
             score = 0; // Reinicia el puntaje
             UpdateScoreText();
             jumpButton.interactable = false;
+            UpdateOrientation();
             Debug.Log("Jugador reiniciado tras colisión.");
         }
     }
@@ -231,7 +232,7 @@ public class ButtonHandler : MonoBehaviour
 
             // Reinicia el parámetro t
             t = 0f;
-
+            UpdateOrientation();
             Debug.Log("Cubo teletransportado al punto de inicio");
         }
     }

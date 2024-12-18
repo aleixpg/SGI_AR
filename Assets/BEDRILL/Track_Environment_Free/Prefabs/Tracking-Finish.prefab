@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4417894779596990537}
   - component: {fileID: 1921757951492529283}
   - component: {fileID: 4741574274511281674}
+  - component: {fileID: -7637382343318940371}
   m_Layer: 0
   m_Name: Tracking-Finish
   m_TagString: Untagged
@@ -106,3 +107,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 6142750130308664309, guid: f07e09f6d3fc20744a9f77e776732341, type: 3}
+--- !u!114 &-7637382343318940371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120340297762815318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82adf3ffad55d174ba26e15479a3ae87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scaleMultiplier: 2
+  maxScaleFactor: 3
