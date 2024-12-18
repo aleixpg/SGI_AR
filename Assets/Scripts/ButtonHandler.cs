@@ -8,7 +8,6 @@ public class ButtonHandler : MonoBehaviour
     public Button jumpButton;
     public GameObject cubePrefab;
     public TextMeshProUGUI scoreText; // Referencia al texto del puntaje
-
     private ImageTracker imageTracker;
     private GameObject movingCube;
     private bool isMoving = false;
@@ -17,13 +16,14 @@ public class ButtonHandler : MonoBehaviour
     private float t = 0f;
     private Vector3 startPoint;
     private float jumpHeight = 0.04f;
-    private float jumpDuration = 0.5f;
+    private float jumpDuration = 0.8f;
     private float jumpTimer = 0f;
     private Vector3 initialJumpPosition;
 
     private int score = 0; // Puntaje del jugador
     private float speedIncrement = 0.1f; // Incremento de velocidad por punto
     void Start()
+
     {
         imageTracker = FindObjectOfType<ImageTracker>();
         startButton.interactable = false;
@@ -130,13 +130,15 @@ public class ButtonHandler : MonoBehaviour
             t = 0f; // Reinicia el parámetro t
             isMoving = false;
 
+
             movementSpeed = 0.2f; // Reinicia la velocidad
             score = 0; // Reinicia el puntaje
             UpdateScoreText();
-
+            jumpButton.interactable = false;
             Debug.Log("Jugador reiniciado tras colisión.");
         }
     }
+
 
     private void UpdateOrientation()
     {
