@@ -58,7 +58,7 @@ public class ButtonHandler : MonoBehaviour
         {
             movementSpeed = Mathf.Lerp(0.2f, 1f, speedScrollbar.value);
         }
-
+        UpdateOrientation();
         // Mueve el cubo si está en movimiento
         if (isMoving && movingCube != null && !isJumping)
         {
@@ -100,22 +100,52 @@ public class ButtonHandler : MonoBehaviour
         }
     }
 
+
     private void SpawnCubeAtTrackingStart()
     {
         if (imageTracker != null && imageTracker.HasStart)
         {
-            // Obtiene la posición del punto Tracking-Start desde el ImageTracker
+            // Obtén la posición del punto Tracking-Start desde el ImageTracker
             startPoint = imageTracker.GetStartPoint();
 
-            // Instancia el cubo en la posición del Tracking-Start
-            movingCube = Instantiate(cubePrefab, startPoint, Quaternion.identity);
-            Debug.Log("Cubo spawneado en Tracking-Start");
+            // Calcula la dirección inicial de la curva
+            var controlPoints = imageTracker.GetControlPoints();
+            float initialDeltaT = 0.01f; // Pequeño incremento para calcular la dirección inicial
+            Vector3 nextPosition = PolynomialCurve.CalculatePoint(initialDeltaT, controlPoints);
+            Vector3 initialDirection = (nextPosition - startPoint).normalized;
+
+            // Instancia el personaje en la posición del Tracking-Start y orientado hacia la dirección inicial
+            movingCube = Instantiate(cubePrefab, startPoint, Quaternion.LookRotation(initialDirection, Vector3.up));
+            Debug.Log("Personaje spawneado en Tracking-Start y orientado hacia la curva");
 
             // Habilita el botón de Jump
             jumpButton.interactable = true;
         }
     }
 
+    private void UpdateOrientation()
+    {
+        if (movingCube != null && imageTracker != null)
+        {
+            var controlPoints = imageTracker.GetControlPoints();
+            Vector3 currentPosition = PolynomialCurve.CalculatePoint(t, controlPoints);
+
+            // Calcula una posición ligeramente adelantada en la curva (usando un delta pequeño en t)
+            float deltaT = 0.01f;
+            float nextT = Mathf.Clamp(t + deltaT, 0f, 1f);
+            Vector3 nextPosition = PolynomialCurve.CalculatePoint(nextT, controlPoints);
+
+            // Calcula la dirección del movimiento
+            Vector3 direction = (nextPosition - currentPosition).normalized;
+
+            // Orienta el personaje hacia la dirección del movimiento
+            if (movingCube != null) // movingCube es ahora tu personaje
+            {
+                movingCube.transform.position = currentPosition;
+                movingCube.transform.forward = direction; // Asegura que el personaje apunte hacia adelante en la curva
+            }
+        }
+    }
     private void MoveCubeAlongCurve()
     {
         // Obtiene los puntos de control de la curva desde el ImageTracker
@@ -130,15 +160,27 @@ public class ButtonHandler : MonoBehaviour
             t = 1f;
             isMoving = false; // Detiene el movimiento
             startButton.GetComponentInChildren<TMP_Text>().text = "Restart"; // Cambia el texto del botón
-            Debug.Log("El cubo ha alcanzado el final de la curva");
+            Debug.Log("El personaje ha alcanzado el final de la curva");
             return;
         }
 
-        // Calcula la posición actual en la curva utilizando el polinomio
-        Vector3 curvePosition = PolynomialCurve.CalculatePoint(t, controlPoints);
+        // Calcula la posición actual en la curva
+        Vector3 currentPosition = PolynomialCurve.CalculatePoint(t, controlPoints);
 
-        // Mueve el cubo a la posición calculada
-        movingCube.transform.position = curvePosition;
+        // Calcula una posición ligeramente adelantada en la curva (usando un delta pequeño en t)
+        float deltaT = 0.01f;
+        float nextT = Mathf.Clamp(t + deltaT, 0f, 1f);
+        Vector3 nextPosition = PolynomialCurve.CalculatePoint(nextT, controlPoints);
+
+        // Calcula la dirección del movimiento
+        Vector3 direction = (nextPosition - currentPosition).normalized;
+
+        // Orienta el personaje hacia la dirección del movimiento
+        if (movingCube != null) // movingCube es ahora tu personaje
+        {
+            movingCube.transform.position = currentPosition;
+            movingCube.transform.forward = direction; // Asegura que el personaje apunte hacia adelante en la curva
+        }
     }
 
     private void HandleJump()
