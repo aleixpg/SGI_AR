@@ -1,0 +1,72 @@
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Archivos específicos de Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Archivos de usuario
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# Archivos específicos de versiones
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Configuración del Editor
+/[Aa]ssets/Plugins/Editor/EditorSettings.asset
+
+# Archivos generados por la Build
+/Builds/**
+
+# Configuración de VS/JetBrains Rider
+.vscode/
+.idea/
+*.code-workspace
+
+# Archivos de crash/logs
+sysinfo.txt
+crash.dmp
+error.log
+output_log.txt
+
+# Archivos de Unity Cloud Build
+[Uu]ser[Ss]ettings/
+
+# Archivos relacionados con LFS (Large File Storage)
+*.psd
+*.tga
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.wav
+*.ogg
+*.mp3
+*.flac
+*.aac
+*.aiff
+*.gif
+
+# Otros
+*.apk
+*.aab
+*.ipa
+*.symbols
+*.lock
