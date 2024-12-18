@@ -49,21 +49,6 @@ output_log.txt
 # Archivos de Unity Cloud Build
 [Uu]ser[Ss]ettings/
 
-# Archivos relacionados con LFS (Large File Storage)
-*.psd
-*.tga
-*.png
-*.jpg
-*.jpeg
-*.mp4
-*.wav
-*.ogg
-*.mp3
-*.flac
-*.aac
-*.aiff
-*.gif
-
 # Otros
 *.apk
 *.aab
