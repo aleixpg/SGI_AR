@@ -34,7 +34,16 @@ public class ImageTracker : MonoBehaviour
     {
         trackedImages = GetComponent<ARTrackedImageManager>();
 
-        roadManager = new RoadManager(roadPrefab);
+        if (roadPrefab != null)
+        {
+            roadManager = new RoadManager(roadPrefab, 40);
+            roadManager.Initialize(); // Llama al método Initialize
+        }
+        else
+        {
+            Debug.LogError("Road prefab is not assigned in ImageTracker.");
+        }
+
         trackedObjectManager = new TrackedObjectManager(instantiatedObjects);
     }
 
@@ -49,18 +58,23 @@ public class ImageTracker : MonoBehaviour
     }
 
     private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
+{
+    // Procesa las imágenes recién añadidas
+    foreach (var trackedImage in eventArgs.added)
     {
-        // Procesa las imágenes recién añadidas
-        foreach (var trackedImage in eventArgs.added)
-        {
-            HandleTrackedImage(trackedImage);
-        }
+        HandleTrackedImage(trackedImage);
+    }
 
-        // Procesa las imágenes actualizadas
-        foreach (var trackedImage in eventArgs.updated)
-        {
-            HandleTrackedImage(trackedImage);
-        }
+    // Procesa las imágenes actualizadas
+    foreach (var trackedImage in eventArgs.updated)
+    {
+        HandleTrackedImage(trackedImage);
+    }
+
+    // Verifica si tanto el inicio como el fin están configurados
+    if (HasStart && HasFinish)
+    {
+        Debug.Log("Start and Finish points are set. Generating road segments...");
 
         // Actualiza los segmentos de carretera
         roadManager.UpdateRoadSegments();
@@ -78,24 +92,31 @@ public class ImageTracker : MonoBehaviour
         // Actualiza la orientación de los objetos instanciados basándose en la curva
         trackedObjectManager.UpdateTrackedObjectsOrientation(trackedImageList, controlPoints);
     }
+    else
+    {
+        Debug.LogWarning("Start or Finish points are missing. Skipping road generation.");
+    }
+}
+
 
     private void HandleTrackedImage(ARTrackedImage trackedImage)
     {
-        // Actualiza los puntos de control de la carretera según la imagen rastreada
         roadManager.UpdateTrackingPoints(trackedImage);
 
-        // Verifica si las imágenes requeridas están presentes
+        Debug.Log($"Processing tracked image: {trackedImage.referenceImage.name}");
+
         if (trackedImage.referenceImage.name == "Tracking-Start")
         {
             start = trackedImage.transform.position;
             HasStart = true;
+            Debug.Log($"Start detected at: {start}");
         }
         else if (trackedImage.referenceImage.name == "Tracking-Finish")
         {
             HasFinish = true;
+            Debug.Log($"Finish detected.");
         }
 
-        // Si no existe un objeto instanciado asociado a esta imagen, lo crea
         if (!instantiatedObjects.ContainsKey(trackedImage.referenceImage.name))
         {
             foreach (var prefab in ArPrefabs)
@@ -104,6 +125,7 @@ public class ImageTracker : MonoBehaviour
                 {
                     var instantiatedObject = Instantiate(prefab, trackedImage.transform);
                     instantiatedObjects[trackedImage.referenceImage.name] = instantiatedObject;
+                    Debug.Log($"Instantiated object for: {trackedImage.referenceImage.name}");
                 }
             }
         }
